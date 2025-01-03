@@ -61,6 +61,9 @@ dependencies {
     // JPA 관련 의존성
     implementation 'javax.persistence:javax.persistence-api:2.2'
     implementation 'org.hibernate:hibernate-core:5.4.32.Final'
+
+    // Thymeleaf Spring Security integration
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 }
 
 tasks.named('test') {

@@ -3,14 +3,15 @@ package penguindisco.loginproject.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import penguindisco.loginproject.domain.LoginType;
+import penguindisco.loginproject.domain.Users;
+import penguindisco.loginproject.dto.RegisterRequest;
+import penguindisco.loginproject.repository.UserRepository;
 
-import Domain.LoginType;
-import Domain.Users;
-import Dto.RegisterRequest;
-import Repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
+
 
 @Service
 public class UserService {
@@ -25,7 +26,7 @@ public class UserService {
         user.setEmail(request.getUserEmail());
         user.setName(request.getUserName());
         user.setPhone(request.getPhone());
-        user.setPhoneVerifiy(request.getPhoneVerifiy());
+        user.setPhoneVerify(request.getPhoneVerifiy());
         user.setZipcode(request.getUserZipcode());
         user.setAddress1(request.getUserAddress1());
         user.setAddress2(request.getUserAddress2());
