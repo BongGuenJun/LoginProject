@@ -6,7 +6,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import Service.CustomOAuth2UserService;
+import penguindisco.loginproject.service.CustomOAuth2UserService;
 
 @Configuration
 public class SecurityConfig {
