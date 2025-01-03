@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="UserMapper">
+    <select id="findByUserNo" resultType="logintest.Domain.Users">
+        SELECT * FROM users WHERE user_no = #{userNo}
+    </select>
+
+    <select id="findByUserId" resultType="logintest.Domain.Users">
+        SELECT * FROM users WHERE user_id = #{userId}
+    </select>
+
+    <select id="findAll" resultType="logintest.Domain.Users">
+        SELECT * FROM users
+    </select>
+
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="userNo">
+        INSERT INTO users(user_id, user_pw, email, phone, user_name, alarm, zipcode, address1, address2, login_type, provider_id, reg_date, point)
+        VALUES(#{userId}, #{userPw}, #{userEmail}, #{phone}, #{userName}, #{alarm}, #{userZipcode}, #{userAddress1}, #{userAddress2}, #{loginType}, #{providerId}, #{regDate}, #{point})
+    </insert>
+
+    <update id="updateUser">
+        UPDATE users
+        SET user_pw = #{userPw}, email = #{userEmail}, phone = #{phone}, user_name = #{userName}, alarm = #{alarm},
+            zipcode = #{userZipcode}, address1 = #{userAddress1}, address2 = #{userAddress2}, login_type = #{loginType}, provider_id = #{providerId},
+            point = #{point}
+        WHERE user_no = #{userNo}
+    </update>
+
+    <delete id="deleteUser">
+        DELETE FROM users WHERE user_no = #{userNo}
+    </delete>
+</mapper>
