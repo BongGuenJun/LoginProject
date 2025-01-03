@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+<h1>Login Page</h1>
+
+<!-- 일반 로그인 폼 -->
+<form th:action="@{/login}" method="post">
+    <label for="username">ID:</label>
+    <input type="text" id="username" name="username" required>
+    <br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <br>
+    <button type="submit">Login</button>
+</form>
+
+<br>
+
+<!-- 회원가입 링크 -->
+<a th:href="@{/register}">Sign up here</a>
+
+<br><br>
+
+<!-- 소셜 로그인 -->
+<h2>Or Login with</h2>
+<a th:href="@{/oauth2/authorization/google}">Google Login</a>
+<br>
+<a th:href="@{/oauth2/authorization/kakao}">Kakao Login</a>
+<br>
+<a th:href="@{/oauth2/authorization/naver}">Naver Login</a>
+<br>
+<!-- 유저 정보 링크 -->
+<a th:href="@{/user-info}">User Info</a>
+</body>
+</html>
