@@ -13,9 +13,11 @@ import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import penguindisco.loginproject.domain.LoginType;
 import penguindisco.loginproject.repository.UserRepository;
 import penguindisco.loginproject.domain.Users;
 
+@Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     @Autowired
