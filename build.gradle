@@ -48,7 +48,8 @@ dependencies {
     implementation 'org.springframework.security:spring-security-oauth2-jose'
 
     // Spring Data JPA (MyBatis와 병행 가능)
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.0'
+
 
     // H2 Database (테스트 용도)
     runtimeOnly 'com.h2database:h2'
@@ -59,8 +60,8 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // JPA 관련 의존성
-    implementation 'javax.persistence:javax.persistence-api:2.2'
-    implementation 'org.hibernate:hibernate-core:5.4.32.Final'
+    implementation 'org.hibernate:hibernate-core:5.6.0.Final'
+    implementation 'jakarta.persistence:jakarta.persistence-api:3.0.0'
 
     // Thymeleaf Spring Security integration
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
