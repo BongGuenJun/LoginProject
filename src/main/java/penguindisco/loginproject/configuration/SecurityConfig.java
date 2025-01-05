@@ -37,7 +37,12 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
-                );
+                )
+        .sessionManagement(session -> session
+                .sessionFixation().migrateSession() // 세션 고정 공격 방지
+                .maximumSessions(1) // 최대 세션 수
+                .maxSessionsPreventsLogin(true) // 최대 세션 수 초과 시 로그인 방지
+        );
         return http.build();
     }
 

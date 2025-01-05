@@ -50,7 +50,6 @@ dependencies {
     // Spring Data JPA (MyBatis와 병행 가능)
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-
     // H2 Database (테스트 용도)
     runtimeOnly 'com.h2database:h2'
 
@@ -58,10 +57,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
-    // JPA 관련 의존성
-    implementation 'org.hibernate:hibernate-core:5.6.0.Final'
-    implementation 'jakarta.persistence:jakarta.persistence-api:3.0.0'
 
     // Thymeleaf Spring Security integration
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'

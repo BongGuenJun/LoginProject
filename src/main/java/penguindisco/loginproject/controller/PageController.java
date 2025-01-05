@@ -16,6 +16,11 @@ public class PageController {
         return "login"; // login.html
     }
 
+    @GetMapping("/userjoin")
+    public String userJoin() {
+        return "userjoin"; // userjoin.html을 반환합니다.
+    }
+
 
 
 }

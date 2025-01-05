@@ -1,20 +1,22 @@
 package penguindisco.loginproject.domain;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Enumerated;
-import javax.persistence.EnumType;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity // JPA 엔티티로 표시
 public class Users {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본 키 생성을 위한 전략 지정
     private Long userNo;
     private String id;
     private String password;

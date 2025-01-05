@@ -21,9 +21,19 @@
 
 <br>
 
-<!-- 회원가입 링크 -->
-<a th:href="@{/register}">Sign up here</a>
-
+<!-- 로그인 상태 확인 -->
+<div class="text-center">
+    <div th:if="${#httpServletRequest.remoteUser == null}">
+        <!-- 회원가입 링크 -->
+        <a th:href="@{/userjoin}" class="btn btn-link">Sign up here</a>
+    </div>
+    <div th:if="${#httpServletRequest.remoteUser != null}">
+        <!-- 로그아웃 버튼 -->
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+    </div>
+</div>
 <br><br>
 
 <!-- 소셜 로그인 -->
