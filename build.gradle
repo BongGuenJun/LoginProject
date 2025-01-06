@@ -59,7 +59,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // Thymeleaf Spring Security integration
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    // implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     
     //layout 설정
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
