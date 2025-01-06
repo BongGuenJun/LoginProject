@@ -2,6 +2,7 @@ package penguindisco.loginproject.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import penguindisco.loginproject.domain.LoginType;
 import penguindisco.loginproject.domain.Users;
@@ -15,6 +16,9 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -36,6 +40,24 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public int login(String id, String pass){
+        int result = -1;
+        Users user = userRepository.findByUserNo(id).orElse(null);
+        //id가 존재하지 않으면 : -1
+        if (user == null){
+            return result;
+        }
+        // 로그인 성공 : 1
+        // 패스워드 인코더 를 통해 암호가 맞는지 확인
+        if (passwordEncoder.matches(pass, user.getPassword())) {
+            result = 1;
+        }else {
+            result = 0;
+        }
+        return result;
+        }
+    }
+
     public Optional<Users> findByUserNo(Long userNo) {
         return userRepository.findByUserNo(userNo);
     }
@@ -55,4 +77,7 @@ public class UserService {
     public void deleteUser(Long userNo) {
         userRepository.deleteById(userNo);
     }
+}
+
+public void main() {
 }

@@ -131,23 +131,23 @@ $(function() {
     $("#emailId").on("keyup", inputCharReplace);
     $("#emailDomain").on("keyup", inputEmailDomainReplace);
 
-    // 모달 로그인 폼 유효성 검사
-    $("#modalLoginForm").submit(function() {
-
-        let id = $("#modalUserId").val();
-        let pass = $("#modalUserPass").val();
-
-        if(id.length <= 0) {
-            alert("아이디를 입력해주세요");
-            $("#modalUserId").focus();
-            return false;
-        }
-        if(pass.length <= 0) {
-            alert("비밀번호를 입력해주세요");
-            $("#modalUserPass").focus();
-            return false;
-        }
-    });
+    // // 모달 로그인 폼 유효성 검사
+    // $("#modalLoginForm").submit(function() {
+    //
+    //     let id = $("#modalUserId").val();
+    //     let pass = $("#modalUserPass").val();
+    //
+    //     if(id.length <= 0) {
+    //         alert("아이디를 입력해주세요");
+    //         $("#modalUserId").focus();
+    //         return false;
+    //     }
+    //     if(pass.length <= 0) {
+    //         alert("비밀번호를 입력해주세요");
+    //         $("#modalUserPass").focus();
+    //         return false;
+    //     }
+    // });
 
     // 로그인 폼 유효성 검사
     $("#loginForm").submit(function() {
