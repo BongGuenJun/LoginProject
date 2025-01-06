@@ -32,6 +32,6 @@ public class LoginController {
             // 일반 사용자의 경우 (테스트 중이므로 null 처리)
             model.addAttribute("user", null);
         }
-        return "userInfo"; // user-info.html
+        return "user/userInfo"; // user-info.html
     }
 }

@@ -22,7 +22,6 @@ public class Users {
     private String password;
     private String email;
     private String phone;
-    private Integer phoneVerify; // 알람수신여부(1: yes)
     private String name;
     private String zipcode;
     private String address1;

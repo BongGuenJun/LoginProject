@@ -107,7 +107,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         user.setProviderId(providerId);
         user.setPhone(null);
-        user.setPhoneVerify(0);
         user.setZipcode(null);
         user.setAddress1(null);
         user.setAddress2(null);

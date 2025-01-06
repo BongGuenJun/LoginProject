@@ -25,15 +25,16 @@ public class SecurityConfig {
                         .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login/**", "/oauth2/**", "/register").permitAll()
+                        .requestMatchers("/", "/userJoin", "/loginPage", "/oauth2/**", "/register", "/oauth2.0/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
+                        .loginPage("/loginPage")
                         .loginPage("/login")
                         .permitAll()
                 )
                 .oauth2Login(oauth -> oauth
-                        .loginPage("/login")
+                        .loginPage("/loginPage")
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )

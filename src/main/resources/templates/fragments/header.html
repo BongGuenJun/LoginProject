@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- header  -->
+<div th:fragment="header" class="row border-bottom border-primary">
+	<div class="col-4">
+		<p><img src="https://via.placeholder.com/200x100"></p>
+	</div>
+	<div class="col-8">
+		<div class="row">
+			<div class="col">
+				<ul class="nav justify-content-end">
+					<!-- 로그인 상태 - session에 isLogin == true  -->
+					<li class="nav-item">
+						<th:block th:unless="${session.isLogin}">
+							<a class="nav-link" th:href="@{loginForm}">로그인-폼</a>
+						</th:block>						
+						<th:block th:if="${session.isLogin}">
+							<a class="nav-link" th:href="@{memberLogout}">로그아웃</a>
+						</th:block>
+					</li>					
+					<li class="nav-item">
+						<th:block th:unless="${session.isLogin}">
+							<a class="nav-link" th:href="@{#}"
+								th:attrappend="data-bs-toggle='modal', data-bs-target='#loginModal'">
+							로그인-모달</a>
+						</th:block>	
+						<th:block th:if="${session.isLogin}">
+							<a class="nav-link" th:href="@{logout}">로그아웃</a>
+						</th:block>
+					</li>					
+					<li class="nav-item">
+						<a class="nav-link" href="boardList">게시글 리스트</a>
+					</li>
+					<li class="nav-item">
+						<th:block th:unless="${session.isLogin}">
+							<a class="nav-link" href="joinForm">회원가입</a>
+						</th:block>	
+						<th:block th:if="${session.isLogin}">
+							<a class="nav-link" href="memberUpdateForm">정보수정</a>
+						</th:block>							
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">주문/배송조회</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">고객센터</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col text-end text-primary pe-5">
+				<div th:if="${session.isLogin}">
+					안녕하세요 [[${session.member != null} ? ${session.member.id}]]님
+				</div>	
+			</div>
+		</div>
+	</div>
+</div>

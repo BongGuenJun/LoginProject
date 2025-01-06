@@ -3,25 +3,30 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="UserMapper">
-    <select id="findByUserNo" resultType="loginproject.Domain.Users">
+<mapper namespace="loginproject.mapper.UserMapper">
+
+    <select id="findByUserNo" parameterType="long" resultType="penguindisco.loginproject.domain.Users">
         SELECT * FROM users WHERE user_no = #{userNo}
     </select>
 
-    <select id="findByUserId" resultType="loginproject.Domain.Users">
+    <select id="findByUserId" parameterType="string" resultType="penguindisco.loginproject.domain.Users">
         SELECT * FROM users WHERE user_id = #{userId}
     </select>
 
-    <select id="findAll" resultType="loginproject.Domain.Users">
+    <select id="findAll" resultType="penguindisco.loginproject.domain.Users">
         SELECT * FROM users
     </select>
 
-    <insert id="insertUser" useGeneratedKeys="true" keyProperty="userNo">
+    <select id="getUsers" parameterType="string" resultType="penguindisco.loginproject.domain.Users">
+        SELECT * FROM users WHERE id = #{id}
+    </select>
+
+    <insert id="insertUser" parameterType="penguindisco.loginproject.domain.Users" useGeneratedKeys="true" keyProperty="userNo">
         INSERT INTO users(user_id, user_pw, email, phone, user_name, alarm, zipcode, address1, address2, login_type, provider_id, reg_date, point)
         VALUES(#{userId}, #{userPw}, #{userEmail}, #{phone}, #{userName}, #{alarm}, #{userZipcode}, #{userAddress1}, #{userAddress2}, #{loginType}, #{providerId}, #{regDate}, #{point})
     </insert>
 
-    <update id="updateUser">
+    <update id="updateUser" parameterType="penguindisco.loginproject.domain.Users">
         UPDATE users
         SET user_pw = #{userPw}, email = #{userEmail}, phone = #{phone}, user_name = #{userName}, alarm = #{alarm},
             zipcode = #{userZipcode}, address1 = #{userAddress1}, address2 = #{userAddress2}, login_type = #{loginType}, provider_id = #{providerId},
@@ -29,7 +34,7 @@
         WHERE user_no = #{userNo}
     </update>
 
-    <delete id="deleteUser">
+    <delete id="deleteUser" parameterType="long">
         DELETE FROM users WHERE user_no = #{userNo}
     </delete>
 </mapper>

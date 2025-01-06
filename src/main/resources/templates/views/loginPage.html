@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+<th:block layout:fragment="content">
+    <div class="container my-5">
+        <h1 class="mb-4">Login Page</h1>
+
+        <!-- 일반 로그인 폼 -->
+        <form th:action="@{/login}" method="post" class="mb-3">
+            <div class="mb-3">
+                <label for="username" class="form-label">ID:</label>
+                <input type="text" id="username" name="username" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password:</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+
+        <div class="text-center mb-3">
+            <!-- 회원가입 링크 -->
+            <a href="/userJoin" class="btn btn-link">Sign up here</a>
+        </div>
+
+        <div class="text-center mb-3">
+            <!-- 로그아웃 버튼 -->
+            <form action="/logout" method="post">
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+        </div>
+
+        <!-- 소셜 로그인 -->
+        <h2 class="text-center mb-3">Or Login with</h2>
+        <div class="text-center mb-3">
+            <a th:href="@{/oauth2/authorization/google}" class="btn btn-outline-primary">Google Login</a>
+        </div>
+        <div class="text-center mb-3">
+            <a th:href="@{/oauth2/authorization/kakao}" class="btn btn-outline-warning">Kakao Login</a>
+        </div>
+        <div class="text-center mb-3">
+            <a th:href="@{/oauth2/authorization/naver}" class="btn btn-outline-info">Naver Login</a>
+        </div>
+        <!-- 유저 정보 링크 -->
+        <div class="text-center mb-3">
+            <a th:href="@{/user-info}" class="btn btn-link">User Info</a>
+        </div>
+    </div>
+</th:block>
+</html>

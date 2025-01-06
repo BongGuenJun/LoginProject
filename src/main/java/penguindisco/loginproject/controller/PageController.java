@@ -8,17 +8,17 @@ public class PageController {
 
     @GetMapping({"/" , "/main"})
     public String home() {
-        return "main"; //main.html
+        return "views/main"; //main.html
     }
 
-    @GetMapping("/login")
+    @GetMapping("/loginPage")
     public String loginPage() {
-        return "login"; // login.html
+        return "views/loginPage"; // loginPage.html
     }
 
-    @GetMapping("/userjoin")
+    @GetMapping("/userJoin")
     public String userJoin() {
-        return "userjoin"; // userjoin.html을 반환합니다.
+        return "user/userJoin"; // userjoin.html을 반환합니다.
     }
 
 

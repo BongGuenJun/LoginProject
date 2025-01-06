@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+<th:block layout:fragment="content">
+  <div class="container my-5">
+    <h1 class="mb-4">User Information</h1>
+    <!-- 사용자 정보 표시 -->
+    <div class="card">
+      <div class="card-body">
+        <p><strong>UserNo:</strong> <span th:text="${user.userNo}">userNo</span></p>
+        <p><strong>Username:</strong> <span th:text="${user.name}">Name</span></p>
+        <p><strong>UserId:</strong> <span th:text="${user.id}">UserID</span></p>
+        <p><strong>Email:</strong> <span th:text="${user.email}">Email</span></p>
+        <p><strong>Provider:</strong> <span th:text="${user.loginType}">Provider</span></p>
+        <p><strong>Phone:</strong>
+          <span th:if="${user.phone != null}" th:text="${user.phone}">Phone</span>
+          <span th:if="${user.phone == null}">Not available</span>
+        </p>
+        <p><strong>Address:</strong>
+          <span th:if="${user.address1 != null}" th:text="${user.address1} + ' ' + ${user.address2}">Address</span>
+          <span th:if="${user.address1 == null}">Not available</span>
+        </p>
+        <p><strong>Zipcode:</strong>
+          <span th:if="${user.zipcode != null}" th:text="${user.zipcode}">Zipcode</span>
+          <span th:if="${user.zipcode == null}">Not available</span>
+        </p>
+        <p><strong>Points:</strong> <span th:text="${user.point}">0</span></p>
+      </div>
+    </div>
+    <br>
+    <!-- 로그아웃 버튼 -->
+    <form th:action="@{/logout}" method="post">
+      <button type="submit" class="btn btn-primary">Logout</button>
+    </form>
+  </div>
+</th:block>
+</html>
