@@ -1,10 +1,8 @@
 package penguindisco.loginproject.controller;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +12,6 @@ import penguindisco.loginproject.domain.Users;
 import penguindisco.loginproject.service.UserService;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 @Controller
 @SessionAttributes("user")
@@ -25,43 +22,26 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/login")
-    public String login(Model model, @RequestParam("userId") String id,
+    public String login(Model model,
+                        @RequestParam("userId") String id,
                         @RequestParam("pass") String pass,
                         @RequestParam(name = "loginType", required = false, defaultValue = "LOCAL") LoginType loginType,
-                        @RequestParam(name = "providerId", required = false) String providerId,
-                        HttpSession session, HttpServletResponse response)
-            throws ServletException, IOException {
+                        HttpSession session, HttpServletResponse response) throws IOException {
 
-        // 로그인 타입에 따라 providerId 설정
-        if (loginType == LoginType.LOCAL) {
-            providerId = null;
-        }
+        log.info("Login attempt with ID: {}", id);
 
-        int result = userService.login(id, pass, loginType, providerId);
-        if (result == 1) { // 회원 아이디가 존재하지 않으면
+        try {
+            Users user = userService.authenticate(id, pass, loginType); // 예외 기반 인증 처리
+            session.setAttribute("isLogin", true);
+            model.addAttribute("user", user);
+            log.info("User logged in: {}", user.getName());
+            return "redirect:/main";
+        } catch (IllegalArgumentException e) {
+            log.error("Login error: {}", e.getMessage());
             response.setContentType("text/html; charset=utf-8");
-            PrintWriter out = response.getWriter();
-            out.println("<script>");
-            out.println("alert('존재하지 않는 아이디 입니다.');");
-            out.println("history.back();");
-            out.println("</script>");
-            return null;
-        } else if (result == 0) { // 비밀번호가 틀리면
-            response.setContentType("text/html; charset=utf-8");
-            PrintWriter out = response.getWriter();
-            out.println("<script>");
-            out.println("alert('비밀번호가 다릅니다.');");
-            out.println("location.href='loginForm';");
-            out.println("</script>");
+            response.getWriter().println("<script>alert('" + e.getMessage() + "'); history.back();</script>");
             return null;
         }
-        Users user = userService.getUser(id);
-        session.setAttribute("isLogin", true);
-
-        model.addAttribute("user", user);
-        System.out.println("users.name : " + user.getName());
-
-        return "redirect:/main";
     }
 
     @GetMapping("/logout")
@@ -70,39 +50,37 @@ public class UserController {
         return "redirect:/main";
     }
 
-    @RequestMapping("/overlapIdCheck")
+    @GetMapping("/overlapIdCheck")
     public String overlapIdCheck(Model model, @RequestParam("id") String id) {
-
-        //회원 아이디 중복 여부를 받아 온다.
-        boolean overlap = userService.overlapIdCheck(id);
-
-        //model에 회원 ID를 저장 및 중복 여부 저장
+        boolean isDuplicate = userService.overlapIdCheck(id);
         model.addAttribute("id", id);
-        model.addAttribute("overlap", overlap);
-
-        return "user/overlapIdCheck.html";
+        model.addAttribute("overlap", isDuplicate);
+        return "user/overlapIdCheck";
     }
 
     @PostMapping("/joinResult")
     public String joinResult(Model model, Users user,
                              @RequestParam("pass1") String pass1,
                              @RequestParam("emailId") String emailId,
-                             @RequestParam("emailDoamin") String emailDomain,
+                             @RequestParam("emailDomain") String emailDomain,
                              @RequestParam("mobile1") String mobile1,
                              @RequestParam("mobile2") String mobile2,
-                             @RequestParam("mobile3") String mobile3,
-                             @RequestParam("phone1") String phone1,
-                             @RequestParam("phone2") String phone2,
-                             @RequestParam("phone3") String phone3) {
+                             @RequestParam("mobile3") String mobile3) {
 
-        user.setPassword(pass1);
-        user.setEmail(emailId + "@" + emailDomain);
-        user.setPhone(mobile1 + "-" + mobile2 + "-" + mobile3);
+        log.info("joinResult called with user ID: {}", user.getId());
 
-        userService.insertUser(user);
-        log.info("joinResult : " + user.getName());
-        return "redirect:user/loginPage";
+        try {
+            user.setPassword(pass1);
+            user.setEmail(emailId + "@" + emailDomain);
+            user.setPhone(String.format("%s-%s-%s", mobile1, mobile2, mobile3));
 
+            userService.insertUser(user);
+            log.info("User registered: {}", user.getName());
+            return "redirect:/loginPage";
+        } catch (Exception e) {
+            log.error("Error registering user: ", e);
+            model.addAttribute("errorMessage", "회원가입 중 오류가 발생했습니다.");
+            return "userJoin";
+        }
     }
 }
-

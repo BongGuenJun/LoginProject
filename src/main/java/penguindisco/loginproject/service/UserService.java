@@ -2,13 +2,12 @@ package penguindisco.loginproject.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import penguindisco.loginproject.domain.LoginType;
 import penguindisco.loginproject.domain.Users;
 import penguindisco.loginproject.dto.RegisterRequest;
-import penguindisco.loginproject.mapper.UserMapper;
 import penguindisco.loginproject.repository.UserRepository;
 
 import java.util.List;
@@ -24,98 +23,124 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private UserMapper userMapper;
-
-    //회원 정보를 회원 테이블에 저장하는 메서드
-    public void insertUser(Users user){
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        log.info(user.getPassword());
-        userMapper.insertUser(user);
-    }
-
-    // 회원 아이디 중복 확인
-    public boolean overlapIdCheck(String id) {
-        Users user = userMapper.getUsers(id);
-        log.info("overlapIdCheck - user: " + user);
-        return user != null;
-    }
-
-    // 회원가입 처리
-    public void registerUser(RegisterRequest request) {
-        Users user = new Users();
-        user.setId(request.getUserId());
-        user.setPassword(new BCryptPasswordEncoder().encode(request.getUserPw()));
-        user.setEmail(request.getUserEmail());
-        user.setName(request.getUserName());
-        user.setPhone(request.getPhone());
-        user.setZipcode(request.getUserZipcode());
-        user.setAddress1(request.getUserAddress1());
-        user.setAddress2(request.getUserAddress2());
-        user.setLoginType(LoginType.LOCAL);
-        user.setProviderId(request.getProviderId());
-        user.setPoint(0);
-        userRepository.save(user);
-    }
-
-    // 로그인 처리
-    public int login(String id, String pass, LoginType loginType, String providerId) {
-        int result = -1;
-        Users user;
+    /**
+     * 사용자 인증 처리
+     *
+     * @param id        사용자 ID
+     * @param password  사용자 비밀번호
+     * @param loginType 로그인 타입 (LOCAL or SOCIAL)
+     * @return 인증된 사용자 객체
+     * @throws IllegalArgumentException 인증 실패 시 예외
+     */
+    public Users authenticate(String id, String password, LoginType loginType) {
+        Optional<Users> userOptional;
 
         if (loginType == LoginType.LOCAL) {
-            // 일반 로그인 처리
-            Long userNo;
-            try {
-                userNo = Long.valueOf(id);
-            } catch (NumberFormatException e) {
-                return result; // id가 숫자가 아닌 경우 -1 반환
-            }
-            user = userRepository.findByUserNo(userNo).orElse(null);
+            userOptional = userRepository.findByName(id);
         } else {
-            // 소셜 로그인 처리
-            user = userRepository.findByProviderIdAndLoginType(providerId, loginType).orElse(null);
+            userOptional = userRepository.findByProviderIdAndLoginType(id, loginType);
         }
 
-        // 사용자 존재 여부 확인
-        if (user == null) {
-            return result;
+        Users user = userOptional.orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        if (loginType == LoginType.LOCAL && !passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        // 일반 로그인인 경우 패스워드 확인
-        if (loginType == LoginType.LOCAL && !passwordEncoder.matches(pass, user.getPassword())) {
-            return 0; // 비밀번호 불일치
-        }
-
-        return 1; // 로그인 성공
+        return user;
     }
 
-    // 회원 id에 해당하는 회원정보를 읽어와 반환하는 메서드
-    public Users getUser(String id) {
-        return userMapper.getUsers(id);
+    /**
+     * 회원 정보를 저장하는 메서드
+     * @param user 사용자 정보
+     */
+    @Transactional
+    public void insertUser(Users user) {
+        log.info("Inserting user: {}", user.getId());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+        log.info("New user saved: {}", user.getName());
     }
 
-    // 회원 번호로 회원을 찾는 메서드
+    /**
+     * 회원 ID 중복 확인
+     * @param id 사용자 ID
+     * @return 중복 여부
+     */
+    public boolean overlapIdCheck(String id) {
+        return userRepository.findByName(id).isPresent();
+    }
+
+    /**
+     * 회원 번호로 회원을 찾는 메서드
+     * @param userNo 사용자 번호
+     * @return 사용자 정보
+     */
     public Optional<Users> findByUserNo(Long userNo) {
         return userRepository.findByUserNo(userNo);
     }
 
-    // 이메일로 회원을 찾는 메서드
+    /**
+     * 회원 이름으로 회원을 찾는 메서드
+     * @param name 사용자 이름
+     * @return 사용자 정보
+     */
+    public Optional<Users> findByName(String name) {
+        return userRepository.findByName(name);
+    }
+
+    /**
+     * 이메일로 회원을 찾는 메서드
+     * @param email 사용자 이메일
+     * @return 사용자 정보
+     */
     public Optional<Users> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    // 모든 회원을 찾는 메서드
+    /**
+     * 회원가입 처리 메서드
+     * @param request 회원가입 요청 정보
+     */
+    @Transactional
+    public void registerUser(RegisterRequest request) {
+        Users user = new Users();
+        user.setId(request.getId()); // 필드명 수정
+        user.setName(request.getName()); // 필드명 수정
+        user.setPassword(passwordEncoder.encode(request.getPassword())); // 필드명 수정
+        user.setEmail(request.getEmail()); // 필드명 수정
+        user.setPhone(request.getPhone());
+        user.setZipcode(request.getZipcode()); // 필드명 수정
+        user.setAddress1(request.getAddress1()); // 필드명 수정
+        user.setAddress2(request.getAddress2()); // 필드명 수정
+        user.setLoginType(LoginType.LOCAL); // 로그인 타입 설정
+        user.setProviderId(request.getProviderId());
+
+        userRepository.save(user);
+        log.info("User registered successfully: {}", user.getName());
+    }
+
+    /**
+     * 모든 회원을 찾는 메서드
+     * @return 모든 회원 정보
+     */
     public List<Users> findAll() {
         return userRepository.findAll();
     }
 
-    // 회원 정보를 업데이트하는 메서드
+    /**
+     * 회원 정보를 업데이트하는 메서드
+     * @param user 사용자 정보
+     */
     public void updateUser(Users user) {
         userRepository.save(user);
     }
 
-    // 회원을 삭제하는 메서드
+    /**
+     * 회원을 삭제하는 메서드
+     * @param userNo 사용자 번호
+     */
     public void deleteUser(Long userNo) {
         userRepository.deleteById(userNo);
     }

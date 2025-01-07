@@ -1,6 +1,4 @@
-// DOM이 준비되면
-$(function() {
-
+$(function () {
 
     /////////////////////1번추가항목////////////////////////////////////////
     // 로그인 폼 유효성 검사
@@ -39,7 +37,7 @@ $(function() {
 
     /////////////////////////////////////////////////////////////////////////////
 
-    ///////////// 아이디 중복환인 용 새창을 띄워주는 함수/////////////////////
+    ///////////// 아이디 중복확인 용 새창을 띄워주는 함수/////////////////////
     $("#btnOverlapId").on("click", function() {
         let id = $("#id").val();
         url = "overlapIdCheck?id=" + id;
@@ -82,9 +80,6 @@ $(function() {
         let data = "id=" + oldId + "&pass=" + oldPass;
 
         // 비동기 통신(Ajax)
-        // location.href = "passCheck?" + data;
-        // XMLHttpRequest, ES6 - fetch API - 비동기 처리 Promise - Axios
-        // jQuery
         $.ajax({
             url: "passCheck.ajax",
             type: "get",
@@ -114,7 +109,7 @@ $(function() {
     });
 //////////////////////////////////////////////////////////
 
- ////////////////셀렉트 박스에서 선택된 도메인을 설정하는 함수//////////////////
+    ////////////////셀렉트 박스에서 선택된 도메인을 설정하는 함수//////////////////
     $("#selectDomain").on("change", function() {
         let str = $(this).val();
         if(str == '직접입력') {
@@ -160,31 +155,10 @@ $(function() {
     });
 ////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
-
-
-    // // 모달 로그인 폼 유효성 검사
-    // $("#modalLoginForm").submit(function() {
-    //
-    //     let id = $("#modalUserId").val();
-    //     let pass = $("#modalUserPass").val();
-    //
-    //     if(id.length <= 0) {
-    //         alert("아이디를 입력해주세요");
-    //         $("#modalUserId").focus();
-    //         return false;
-    //     }
-    //     if(pass.length <= 0) {
-    //         alert("비밀번호를 입력해주세요");
-    //         $("#modalUserPass").focus();
-    //         return false;
-    //     }
-    // });
-
-
+    // 소셜 로그인 버튼 클릭 이벤트 추가
+    $(".btn-outline-primary, .btn-outline-warning, .btn-outline-info").on("click", function () {
+        console.log("Social login clicked: " + $(this).text());
+    });
 }); // end $(function() {}) DOM이 준비되면 끝
 
 
@@ -299,6 +273,3 @@ function inputEmailDomainReplace() {
     }
 }
 ////////////////////////////////////////////////////////////////
-
-
-

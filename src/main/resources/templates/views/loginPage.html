@@ -7,7 +7,8 @@
         <h1 class="mb-4">Login Page</h1>
 
         <!-- 일반 로그인 폼 -->
-        <form th:action="@{/login}" method="post" class="mb-3">
+        <!-- ID 추가: user.js에서 참조하기 위해 loginForm ID를 추가 -->
+        <form th:action="@{/login}" method="post" class="mb-3" id="loginForm">
             <div class="mb-3">
                 <label for="username" class="form-label">ID:</label>
                 <input type="text" id="username" name="username" class="form-control" required>

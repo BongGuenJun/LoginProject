@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link th:href="@{bootstrap/bootstrap.min.css}" rel="stylesheet" >
+    <link th:href="@{bootstrap/bootstrap.min.css}" rel="stylesheet">
     <script th:src="@{js/jquery-3.7.1.min.js}"></script>
     <script th:src="@{js/user.js}"></script>
     <title>중복 아이디 체크</title>
@@ -49,11 +49,24 @@
         </div>
         <div class="row mt-5">
             <div class="col text-center">
-                <input type="button" th:value="|${id}을(를) 아이디로 사용하기|"
-                       id="btnIdCheckClose" th:data-id-value="${id}" class="btn btn-primary"/>
+                <!-- 아이디를 부모 창으로 전달하는 폼과 버튼 추가 -->
+                <form action="/joinResult" method="post">
+                    <input type="hidden" name="id" th:value="${id}"/>
+                    <input type="button" th:value="|${id}을(를) 아이디로 사용하기|"
+                           id="btnIdCheckClose" th:data-id-value="${id}" class="btn btn-primary"/>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    // '아이디 사용하기' 버튼 클릭 시 부모 창으로 아이디 전달 후 새 창 닫기
+    document.getElementById('btnIdCheckClose').addEventListener('click', function() {
+        var id = this.getAttribute('data-id-value'); // 아이디 값 가져오기
+        window.opener.document.getElementById('id').value = id; // 부모 창의 아이디 입력란에 값 넣기
+        window.close(); // 새창 닫기
+    });
+</script>
 </body>
 </html>

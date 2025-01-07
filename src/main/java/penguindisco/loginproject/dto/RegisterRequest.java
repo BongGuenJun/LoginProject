@@ -4,14 +4,13 @@ import lombok.Data;
 
 @Data
 public class RegisterRequest {
-    private String userId;
-    private String userPw;
-    private String userEmail;
-    private String userName;
+    private String id;         // 필드명 수정 (userId -> id)
+    private String password;   // 필드명 수정 (userPw -> password)
+    private String email;      // 필드명 수정 (userEmail -> email)
     private String phone;
-    private Integer phoneVerifiy;  // 변경된 부분
-    private String userZipcode;
-    private String userAddress1;
-    private String userAddress2;
+    private String name;       // 필드명 수정 (userName -> name)
+    private String zipcode;
+    private String address1;
+    private String address2;
     private String providerId;
 }
