@@ -16,7 +16,8 @@ import java.time.LocalDateTime;
 public class Users {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본 키 생성을 위한 전략 지정
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_no")// 기본 키 생성을 위한 전략 지정
     private Long userNo;
     private String id;
     private String password;

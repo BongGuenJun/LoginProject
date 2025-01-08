@@ -3,33 +3,29 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="loginproject.mapper.UserMapper">
+<mapper namespace="penguindisco.loginproject.mapper.UserMapper">
 
     <select id="findByUserNo" parameterType="long" resultType="penguindisco.loginproject.domain.Users">
         SELECT * FROM users WHERE user_no = #{userNo}
     </select>
 
-    <select id="findByUserId" parameterType="string" resultType="penguindisco.loginproject.domain.Users">
-        SELECT * FROM users WHERE user_id = #{userId}
+    <select id="findById" parameterType="string" resultType="penguindisco.loginproject.domain.Users">
+        SELECT * FROM users WHERE id = #{id}
     </select>
 
     <select id="findAll" resultType="penguindisco.loginproject.domain.Users">
         SELECT * FROM users
     </select>
 
-    <select id="getUsers" parameterType="string" resultType="penguindisco.loginproject.domain.Users">
-        SELECT * FROM users WHERE id = #{id}
-    </select>
-
     <insert id="insertUser" parameterType="penguindisco.loginproject.domain.Users" useGeneratedKeys="true" keyProperty="userNo">
-        INSERT INTO users(user_id, user_pw, email, phone, user_name, alarm, zipcode, address1, address2, login_type, provider_id, reg_date, point)
-        VALUES(#{userId}, #{userPw}, #{userEmail}, #{phone}, #{userName}, #{alarm}, #{userZipcode}, #{userAddress1}, #{userAddress2}, #{loginType}, #{providerId}, #{regDate}, #{point})
+        INSERT INTO users(id, password, email, phone, name, zipcode, address1, address2, login_type, provider_id, reg_date, point)
+        VALUES(#{id}, #{password}, #{email}, #{phone}, #{name}, #{zipcode}, #{address1}, #{address2}, #{loginType}, #{providerId}, #{regDate}, #{point})
     </insert>
 
     <update id="updateUser" parameterType="penguindisco.loginproject.domain.Users">
         UPDATE users
-        SET user_pw = #{userPw}, email = #{userEmail}, phone = #{phone}, user_name = #{userName}, alarm = #{alarm},
-            zipcode = #{userZipcode}, address1 = #{userAddress1}, address2 = #{userAddress2}, login_type = #{loginType}, provider_id = #{providerId},
+        SET password = #{password}, email = #{email}, phone = #{phone}, name = #{name},
+            zipcode = #{zipcode}, address1 = #{address1}, address2 = #{address2}, login_type = #{loginType}, provider_id = #{providerId},
             point = #{point}
         WHERE user_no = #{userNo}
     </update>
@@ -37,4 +33,5 @@
     <delete id="deleteUser" parameterType="long">
         DELETE FROM users WHERE user_no = #{userNo}
     </delete>
+
 </mapper>

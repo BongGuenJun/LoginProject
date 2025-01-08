@@ -6,7 +6,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import penguindisco.loginproject.service.CustomOAuth2UserService;
 
 @Configuration
@@ -22,11 +21,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
-                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository())
+                        .disable()
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/userJoin", "/loginPage", "/oauth2/**", "/register", "/oauth2.0/*", "/overlapIdCheck").permitAll()
-                        .requestMatchers("/static/**", "/bootstrap/**", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "user/**", "/userJoin", "/loginPage", "/oauth2/**", "/register", "/oauth2.0/*", "/overlapIdCheck").permitAll()
+                        .requestMatchers("/static/**", "/bootstrap/**", "/css/**", "/js/**", "/images/**", "/joinResult").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

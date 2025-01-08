@@ -4,16 +4,22 @@ $(function () {
     // 로그인 폼 유효성 검사
     $("#loginForm").submit(function() {
 
-        let id = $("#userId").val();
-        let pass = $("#userPass").val();
+        let id = $("#id").val();
+        let pass1 = $("#pass1").val();
+        let pass2 = $("pass2").val();
 
         if(id.length <= 0) {
             alert("아이디를 입력해주세요");
             $("#userId").focus();
             return false;
         }
-        if(pass.length <= 0) {
+        if(pass1.length <= 0) {
             alert("비밀번호를 입력해주세요");
+            $("#userPass").focus();
+            return false;
+        }
+        if(pass2.length <= 0) {
+            alert("비밀번호 확인란을 입력해주세요");
             $("#userPass").focus();
             return false;
         }
@@ -25,7 +31,7 @@ $(function () {
 
         let regExp = /[^a-zA-Z0-9]/gi;
         if(regExp.test($("#id").val())) {
-            alert("영문자와 숫자만 입력할 수 있음");
+            alert("영문자와 숫자만 입력할 수 있습니다.");
             $(this).val($(this).val().replace(regExp, ""))
         }
     });
@@ -38,24 +44,28 @@ $(function () {
     /////////////////////////////////////////////////////////////////////////////
 
     ///////////// 아이디 중복확인 용 새창을 띄워주는 함수/////////////////////
-    $("#btnOverlapId").on("click", function() {
-        let id = $("#id").val();
-        url = "overlapIdCheck?id=" + id;
+    $("#btnOverlapId").on("click", function () {
+        let id = $("#id").val(); // 입력된 아이디 값 가져오기
 
-        if(id.length == 0) {
+        if (id.length === 0) { // 아이디 입력 여부 확인
             alert("아이디를 입력해주세요");
             return false;
         }
-        if(id.length < 5) {
+        if (id.length < 5) { // 아이디 길이 확인
             alert("아이디는 5자 이상이어야 합니다.");
             return false;
         }
 
-        window.open(url, "idCheck", "toolbar=no, scrollbars=no, resizeable=no, "
-            + "status=no, menubar=no, width=500, height=330");
+        // URL 생성 및 로그 출력
+        const url = "/overlapIdCheck?id=" + encodeURIComponent(id); // 입력값 URL 인코딩
+        console.log("Requesting URL:", url); // 디버깅용 로그 출력
+
+        // 새 창 열기
+        window.open(url, "idCheck", "toolbar=no, scrollbars=no, resizable=no, status=no, menubar=no, width=500, height=330");
     });
     //////////////////////////////////////////////////////////////
 
+    ////member update 부분 현제는 사용한하는 부분 주의///////////////////////////////////
     $("#memberUpdateForm").on("submit", function(e) {
 
         // 비밀번호 확인 유무 체크
@@ -102,7 +112,7 @@ $(function () {
             }
         });
     });
-
+///////////////////////////////////////////////////////////////
 //////// 회원가입 폼이 전송될 때 유효성 검사////////////////////
     $("#joinForm").submit(function() {
         return joinFormCheck();

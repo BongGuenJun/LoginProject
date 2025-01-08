@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import penguindisco.loginproject.domain.LoginType;
 import penguindisco.loginproject.domain.Users;
 import penguindisco.loginproject.dto.RegisterRequest;
+import penguindisco.loginproject.mapper.UserMapper;
 import penguindisco.loginproject.repository.UserRepository;
 
 import java.util.List;
@@ -23,6 +24,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserMapper userMapper;
+
     /**
      * 사용자 인증 처리
      *
@@ -36,7 +40,7 @@ public class UserService {
         Optional<Users> userOptional;
 
         if (loginType == LoginType.LOCAL) {
-            userOptional = userRepository.findByName(id);
+            userOptional = userRepository.findById(id);
         } else {
             userOptional = userRepository.findByProviderIdAndLoginType(id, loginType);
         }
@@ -68,8 +72,11 @@ public class UserService {
      * @param id 사용자 ID
      * @return 중복 여부
      */
-    public boolean overlapIdCheck(String id) {
-        return userRepository.findByName(id).isPresent();
+
+    // 회원 ID에 해당하는 회원 정보를 읽어와 반환하는 메서드
+    public Users findById(String id){
+        return userMapper.findById(id);
+
     }
 
     /**
@@ -142,6 +149,20 @@ public class UserService {
      * @param userNo 사용자 번호
      */
     public void deleteUser(Long userNo) {
-        userRepository.deleteById(userNo);
+        userRepository.deleteByUserNo(userNo);
     }
+
+    public boolean overlapIdCheck(String id){
+        log.info("Checking overlap for ID: {}", id);
+        Users user = userMapper.findById(id);
+        log.info("overlapIdCheck - user :" + user);
+        return user != null;
+    }
+
 }
+
+
+
+
+
+
