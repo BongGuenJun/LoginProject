@@ -1,11 +1,25 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/main_layout}">
+      layout:decorate="~{layouts/main_layout}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <th:block layout:fragment="content">
     <div class="container my-5">
         <h1 class="mb-4">Login Page</h1>
 
+
+        <div sec:authorize="isAuthenticated()">
+        <div class="text-center mb-3">
+            <!-- 로그아웃 버튼 -->
+            <form action="/logout" method="post">
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+        </div>
+        <div class="text-center mb-3">
+            <a th:href="@{/user-info}" class="btn btn-link">내정보 보기</a>
+        </div>
+        </div>
+
+        <div sec:authorize="!isAuthenticated()">
         <!-- 일반 로그인 폼 -->
         <!-- ID 추가: user.js에서 참조하기 위해 loginForm ID를 추가 -->
         <form th:action="@{/login}" method="post" class="mb-3" id="loginForm">
@@ -24,16 +38,8 @@
             <!-- 회원가입 링크 -->
             <a href="/userJoin" class="btn btn-link">Sign up here</a>
         </div>
-
-        <div class="text-center mb-3">
-            <!-- 로그아웃 버튼 -->
-            <form action="/logout" method="post">
-                <button type="submit" class="btn btn-danger">Logout</button>
-            </form>
-        </div>
-
         <!-- 소셜 로그인 -->
-        <h2 class="text-center mb-3">Or Login with</h2>
+        <h2 class="text-center mb-3">소셜로그인</h2>
         <div class="text-center mb-3">
             <a th:href="@{/oauth2/authorization/google}" class="btn btn-outline-primary">Google Login</a>
         </div>
@@ -44,9 +50,7 @@
             <a th:href="@{/oauth2/authorization/naver}" class="btn btn-outline-info">Naver Login</a>
         </div>
         <!-- 유저 정보 링크 -->
-        <div class="text-center mb-3">
-            <a th:href="@{/user-info}" class="btn btn-link">User Info</a>
-        </div>
+    </div>
     </div>
 </th:block>
 </html>

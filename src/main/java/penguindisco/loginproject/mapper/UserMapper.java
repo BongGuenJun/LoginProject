@@ -15,6 +15,14 @@ public interface UserMapper {
     // 특정 UserNo로 사용자 조회
     Users findByUserNo(@Param("userNo") Long userNo);
 
+    // 이름으로 사용자 조회
+    Users findByName(@Param("name") String name);
+
+    //이메일로 사용자 조회
+    Users findByEmail(@Param("email") String email);
+
+    //로그인 타입으로 사용자 조회
+    Users findByLoginType(@Param("loginType") String loginType);
 
     // 모든 사용자 조회
     List<Users> findAll();
@@ -27,8 +35,5 @@ public interface UserMapper {
 
     // 특정 UserNo로 사용자 삭제
     void deleteUser(@Param("userNo") Long userNo);
-
-
-
 
 }

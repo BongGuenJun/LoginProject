@@ -2,51 +2,71 @@ package penguindisco.loginproject.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import penguindisco.loginproject.service.CustomOAuth2UserService;
+import penguindisco.loginproject.service.UserService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
+    private final UserService userService;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService) {
+    @Bean
+    public static PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    public SecurityConfig(UserService userService, CustomOAuth2UserService customOAuth2UserService) {
+        this.userService = userService;
         this.customOAuth2UserService = customOAuth2UserService;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf
-                        .disable()
-                )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "user/**", "/userJoin", "/loginPage", "/oauth2/**", "/register", "/oauth2.0/*", "/overlapIdCheck").permitAll()
-                        .requestMatchers("/static/**", "/bootstrap/**", "/css/**", "/js/**", "/images/**", "/joinResult").permitAll()
+                        .requestMatchers("/", "user/**", "/userJoin", "/login", "/oauth2/**", "/register", "/oauth2.0/*", "/overlapIdCheck").permitAll()
+                        .requestMatchers("/static/**", "/bootstrap/**", "/css/**", "/js/**", "/images/**", "/joinResult", "/h2-console/**", "/userInfo").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/loginPage")
-                        .defaultSuccessUrl("/") // 일반 로그인 성공 후 메인 페이지 이동
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/main") // 일반 로그인 성공 후 메인 페이지 이동
+                        .failureUrl("/login?error=true")
+                        .successHandler((request, response, authentication) -> {
+                            log.info("로그인 성공");
+                            response.sendRedirect("/main");
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            log.info("로그인 실패");
+                            response.sendRedirect("/login?error=true");
+                        })
                         .permitAll()
                 )
                 .oauth2Login(oauth -> oauth
-                        .loginPage("/loginPage")
+                        .loginPage("/login")
                         .defaultSuccessUrl("/main") // 소셜 로그인 성공 후 메인 페이지 이동
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
                         .successHandler((request, response, authentication) -> {
-                            // 로그인 성공 시 세션 초기화
-                            request.getSession().setAttribute("isLoginOk", true);
+                            log.info("로그인 성공");
                             response.sendRedirect("/main");
                         })
                         .failureHandler((request, response, exception) -> {
-                            // 실패 시 메인 페이지로 이동
-                            exception.printStackTrace(); // 실패 이유 로그 출력
+                            log.info("로그인 실패");
                             response.sendRedirect("/main?error=true&message=Login%20issue%20occurred.%20Redirecting%20to%20main.");
                         })
                 )
@@ -59,22 +79,24 @@ public class SecurityConfig {
                         })
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/loginPage")
-                        .invalidateHttpSession(true) // 세션 무효화
-                        .deleteCookies("JSESSIONID") // 세션 쿠키 삭제
-                        .addLogoutHandler((request, response, authentication) -> {
-                            if (authentication != null) {
-                                System.out.println("User " + authentication.getName() + " logged out.");
-                            }
-                        })
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
                 );
+
+        http.csrf(csrf -> csrf.disable());
+        http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         return http.build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userService)
+                .passwordEncoder(passwordEncoder())
+                .and()
+                .build();
     }
 }

@@ -1,6 +1,5 @@
 package penguindisco.loginproject.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -12,7 +11,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import penguindisco.loginproject.domain.LoginType;
 import penguindisco.loginproject.domain.Users;
-import penguindisco.loginproject.repository.UserRepository;
+
 
 import java.util.Collections;
 import java.util.Map;
@@ -20,12 +19,10 @@ import java.util.Map;
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserService userService;
 
-    @Autowired
-    public CustomOAuth2UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomOAuth2UserService(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
@@ -78,16 +75,12 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         System.out.println("Email: " + email);
         System.out.println("Name: " + name);
 
-        // 람다 표현식에서 사용하는 변수를 final로 선언
-        final String emailFinal = email;
-        final String nameFinal = name;
-        final String loginTypeFinal = provider.toUpperCase();
-        final String providerIdFinal = providerId;
-
-
         // 사용자 조회 또는 생성
-        Users user = userRepository.findByEmail(emailFinal)
-                .orElseGet(() -> createUser(emailFinal, nameFinal, loginTypeFinal, providerIdFinal));
+        Users user = userService.findByEmail(email);
+        if (user == null) {
+            user = userService.saveSocialUser(email, name, providerId, LoginType.valueOf(provider.toUpperCase()));
+        }
+
         // 사용자 정보 반환
         Map<String, Object> customAttributes = Map.of(
                 "email", email,
@@ -101,26 +94,5 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 customAttributes,
                 "email"
         );
-    }
-
-    private Users createUser(String email, String name, String loginType, String providerId) {
-        Users user = new Users();
-        user.setEmail(email);
-        user.setName(name);
-
-        try {
-            user.setLoginType(LoginType.valueOf(loginType));
-        } catch (IllegalArgumentException e) {
-            throw new OAuth2AuthenticationException(new OAuth2Error("oauth2_error"), "Unsupported loginType: " + loginType);
-        }
-
-        user.setProviderId(providerId);
-        user.setPhone(null);
-        user.setZipcode(null);
-        user.setAddress1(null);
-        user.setAddress2(null);
-        user.setPoint(0);
-
-        return userRepository.save(user);
     }
 }

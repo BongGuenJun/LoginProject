@@ -1,63 +1,23 @@
 package penguindisco.loginproject.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import penguindisco.loginproject.domain.LoginType;
 import penguindisco.loginproject.domain.Users;
 import penguindisco.loginproject.service.UserService;
 
-import java.io.IOException;
-
-@Controller
-@SessionAttributes("user")
 @Slf4j
-public class UserController {
+@Controller
+public class joinController {
 
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    // 로그인 처리
-    @PostMapping("/login")
-    public String login(Model model,
-                        @RequestParam("userId") String id,
-                        @RequestParam("pass") String pass,
-                        @RequestParam(name = "loginType", required = false, defaultValue = "LOCAL") LoginType loginType,
-                        HttpSession session, HttpServletResponse response) throws IOException {
-
-        log.info("Login attempt with ID: {}", id);
-
-        try {
-            Users user = userService.authenticate(id, pass, loginType); // 예외 기반 인증 처리
-            session.setAttribute("isLogin", true);
-            session.setAttribute("user", user);
-            log.info("User logged in: {}", user.getName());
-            return "redirect:/main";
-        } catch (IllegalArgumentException e) {
-            log.error("Login error: {}", e.getMessage());
-            response.setContentType("text/html; charset=utf-8");
-            response.getWriter().println("<script>alert('" + e.getMessage() + "'); history.back();</script>");
-            return null;
-        }
-    }
-
-    // 로그아웃 처리
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/main";
-    }
 
     // 아이디 중복 확인
     @GetMapping("/overlapIdCheck")
